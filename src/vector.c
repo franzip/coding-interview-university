@@ -8,15 +8,15 @@
 typedef struct Vector vector;
 struct Vector {
     int *items;
-    unsigned capacity;
-    unsigned length;
+    size_t capacity;
+    size_t length;
     bool (*is_empty)(vector *);
-    int (*at)(vector *, unsigned);
+    int (*at)(vector *, size_t);
     void (*push)(vector *, int);
-    void (*insert)(vector *, unsigned, int);
+    void (*insert)(vector *, size_t, int);
     void (*prepend)(vector *, int);
     int (*pop)(vector *);
-    int (*delete)(vector *, unsigned);
+    int (*delete)(vector *, size_t);
     void (*remove)(vector *, int);
     int (*find)(vector *, int);
 };
@@ -35,7 +35,7 @@ print_vec(vector *v) {
 
 void
 resize(vector *v) {
-    unsigned new_capacity = v->capacity * 2;
+    size_t new_capacity = v->capacity * 2;
     v->items = realloc(v->items, new_capacity * sizeof(int));
     v->capacity = new_capacity;
 }
@@ -46,7 +46,7 @@ is_empty(vector *v) {
 }
 
 int
-at(vector *v, unsigned index) {
+at(vector *v, size_t index) {
     if (index > v->capacity) {
         perror("Something went wrong");
         exit(1);
@@ -74,7 +74,7 @@ prepend(vector *v, int item) {
 }
 
 void
-insert(vector *v, unsigned index, int item) {
+insert(vector *v, size_t index, int item) {
     if (index > v->capacity) {
         perror("Something went wrong");
         exit(1);
@@ -95,7 +95,7 @@ insert(vector *v, unsigned index, int item) {
     v->length++;
 }
 
-int delete(vector *v, unsigned index) {
+int delete(vector *v, size_t index) {
     int *ptr;
     int val;
     ptr = v->items + index;
