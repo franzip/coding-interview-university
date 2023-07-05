@@ -697,9 +697,15 @@ if you can identify the runtime complexity of different algorithms. It's a super
         - dequeue() - returns value and removes least recently added element
         - empty()
         - full()
+<<<<<<< HEAD
     - [ ] Cost:
         - a bad implementation using a linked list where you enqueue at the head and dequeue at the tail would be O(n)
             because you'd need the next to last element, causing a full traversal of each dequeue
+=======
+    - [x] Cost:
+        - a bad implementation using linked list where you enqueue at head and dequeue at tail would be O(n)
+            because you'd need the next to last element, causing a full traversal each dequeue
+>>>>>>> ba421ad (queue)
         - enqueue: O(1) (amortized, linked list and array [probing])
         - dequeue: O(1) (linked list and array)
         - empty: O(1) (linked list and array)
