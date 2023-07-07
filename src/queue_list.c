@@ -1,4 +1,4 @@
-#include "linked_list.c"
+#include "lib/linked_list.h"
 
 typedef struct Queue queue;
 
@@ -53,4 +53,5 @@ main(int argc, char **argv) {
     printf("%d\n", myqueue->dequeue(myqueue));
     printf("%d\n", myqueue->dequeue(myqueue));
     printf("%d\n", myqueue->dequeue(myqueue));
+    free(myqueue->list);
 }

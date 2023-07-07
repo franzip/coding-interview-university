@@ -87,4 +87,5 @@ main(int argc, char **argv) {
     printf("%d\n", myqueue->dequeue(myqueue));
     printf("%d\n", myqueue->dequeue(myqueue));
     printf("%d\n", myqueue->dequeue(myqueue));
+    free(myqueue->items);
 }
