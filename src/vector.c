@@ -1,212 +1,68 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "lib/vector.h"
 
-#define INITIAL_CAPACITY 16
-
-typedef struct Vector vector;
-struct Vector {
-    int *items;
-    size_t capacity;
-    size_t length;
-    bool (*is_empty)(vector *);
-    int (*at)(vector *, size_t);
-    void (*push)(vector *, int);
-    void (*insert)(vector *, size_t, int);
-    void (*prepend)(vector *, int);
-    int (*pop)(vector *);
-    int (*delete)(vector *, size_t);
-    void (*remove)(vector *, int);
-    int (*find)(vector *, int);
-};
+#include <assert.h>
 
 void
-print_vec(vector *v) {
+destroy(vector *v) {
+    free(v->items);
+    free(v);
+}
+
+void
+debug(vector *v) {
     int *ptr = v->items;
     int idx = 0;
+    printf("vector: [");
     while (ptr != v->items + v->length) {
-        printf("value at index %d = %d\n", idx, *ptr);
-        idx++;
-        ptr++;
-    }
-    printf("\n\n");
-}
-
-void
-resize(vector *v) {
-    size_t new_capacity = v->capacity * 2;
-    v->items = realloc(v->items, new_capacity * sizeof(int));
-    v->capacity = new_capacity;
-}
-
-bool
-is_empty(vector *v) {
-    return v->length == 0;
-}
-
-int
-at(vector *v, size_t index) {
-    if (index > v->capacity) {
-        perror("Something went wrong");
-        exit(1);
-    }
-
-    int *ptr = v->items + index;
-
-    return *ptr;
-}
-
-void
-push(vector *v, int item) {
-    if (v->length >= v->capacity) {
-        resize(v);
-    }
-    int *ptr = v->items + v->length;
-    *ptr = item;
-
-    v->length++;
-}
-
-void
-prepend(vector *v, int item) {
-    v->insert(v, 0, item);
-}
-
-void
-insert(vector *v, size_t index, int item) {
-    if (index > v->capacity) {
-        perror("Something went wrong");
-        exit(1);
-    }
-
-    if (v->length >= v->capacity) {
-        resize(v);
-    }
-
-    int *ptr = v->items + v->length;
-
-    while (ptr != v->items + index) {
-        *ptr = *(ptr - 1);
-        ptr--;
-    }
-    ptr = v->items + index;
-    *ptr = item;
-    v->length++;
-}
-
-int delete(vector *v, size_t index) {
-    int *ptr;
-    int val;
-    ptr = v->items + index;
-    val = *ptr;
-
-    while (ptr != v->items + v->length) {
-        *ptr = *(ptr + 1);
-        ptr++;
-    }
-
-    v->length--;
-    return val;
-}
-
-int
-pop(vector *v) {
-    int item = v->delete (v, v->length - 1);
-    if (v->length * 4 <= v->capacity) {
-        int new_capacity = v->capacity / 2;
-        v->items = realloc(v->items, new_capacity * sizeof(int));
-        v->capacity = new_capacity;
-    }
-    return item;
-}
-
-void
-remove_el(vector *v, int item) {
-    int *ptr = v->items;
-    while (ptr != v->items + v->length) {
-        if (*ptr == item) {
-            *ptr = 0;
-        }
-        ptr++;
-    }
-}
-
-int
-find(vector *v, int needle) {
-    int *ptr = v->items;
-    int idx = 0;
-    while (ptr != v->items + v->length) {
-        if (*ptr == needle) {
-            return idx;
+        printf("%d", *ptr);
+        if (idx + 1 < v->length) {
+            printf(", ");
         }
         idx++;
         ptr++;
     }
-
-    return -1;
-}
-
-vector *
-make_vector() {
-    vector *vec = malloc(sizeof(vector));
-    int *items = malloc(INITIAL_CAPACITY * sizeof(int));
-    for (int i = 0; i < INITIAL_CAPACITY; i++) {
-        items[i] = 0;
-    }
-    vec->capacity = INITIAL_CAPACITY;
-    vec->length = 0;
-    vec->items = items;
-    vec->is_empty = is_empty;
-    vec->at = at;
-    vec->push = push;
-    vec->insert = insert;
-    vec->prepend = prepend;
-    vec->pop = pop;
-    vec->delete = delete;
-    vec->remove = remove_el;
-    vec->find = find;
-
-    return vec;
+    printf("]\n");
 }
 
 int
 main(int argc, char **argv) {
     vector *vec = make_vector();
+    assert(vec->length == 0);
     for (int i = 0; i < 20; i++) {
         vec->push(vec, i * 3);
     }
-    printf("Start vector\n");
-    print_vec(vec);
+
+    assert(vec->length == 20);
+    debug(vec);
     vec->insert(vec, 1, 50);
     vec->insert(vec, 10, 125);
-    printf("Inserted %d and %d\n", 50, 125);
-    print_vec(vec);
+    assert(vec->at(vec, 1) == 50);
+    assert(vec->at(vec, 10) == 125);
+    assert(vec->length == 22);
+
     vec->prepend(vec, 1000);
     vec->prepend(vec, 1000);
-    printf("Prepended %d twice\n", 1000);
-    print_vec(vec);
-    int popped = vec->pop(vec);
-    printf("popped %d\n", popped);
-    popped = vec->pop(vec);
-    printf("popped %d\n", popped);
-    print_vec(vec);
-    int deleted = vec->delete (vec, 15);
-    printf("deleted %d\n\n", deleted);
-    print_vec(vec);
+    debug(vec);
+    assert(vec->length == 24);
+    assert(vec->pop(vec) == 57);
+    assert(vec->pop(vec) == 54);
+    assert(vec->length == 22);
+    assert(vec->delete (vec, 15) == 33);
+    assert(vec->length == 21);
+
     vec->insert(vec, 10, 42);
     vec->insert(vec, 10, 42);
     vec->insert(vec, 10, 42);
-    printf("inserted a bunch of %d\n", 42);
-    print_vec(vec);
+    assert(vec->length == 24);
+    assert(vec->at(vec, 10) == 42);
+    debug(vec);
     vec->remove(vec, 42);
-    printf("Removed %d\n", 42);
-    print_vec(vec);
+    assert(vec->at(vec, 10) != 42);
+    debug(vec);
 
-    printf("found %d at index %d\n", 125, vec->find(vec, 125));
-    printf("trying to find %d: result %d", 10000, vec->find(vec, 10000));
-
-    free(vec->items);
-    free(vec);
+    assert(vec->find(vec, 125) == 15);
+    assert(vec->find(vec, 1000) == 0);
+    assert(vec->find(vec, 1001) == -1);
+    destroy(vec);
     return 0;
 }
