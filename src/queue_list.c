@@ -1,57 +1,56 @@
-#include "lib/linked_list.h"
+#include "lib/queue_list.h"
 
-typedef struct Queue queue;
-
-struct Queue {
-    linkedlist *list;
-    void (*enqueue)(queue *, int);
-    int (*dequeue)(queue *);
-    bool (*empty)(queue *);
-};
+#include <assert.h>
 
 void
-enqueue(queue *queue, int val) {
-    queue->list->push_back(queue->list, val);
-    return;
+destroy(queue *queue) {
+    node *ptr = queue->list->head;
+
+    while (ptr) {
+        node *next = ptr->next;
+        free(ptr);
+        ptr = next;
+    }
+    free(queue->list);
+    free(queue);
 }
 
-int
-dequeue(queue *queue) {
-    return queue->list->pop_front(queue->list);
-}
-
-bool
-emptyq(queue *queue) {
-    return queue->list->empty(queue->list);
-}
-
-queue *
-make_queue() {
-    queue *myqueue = malloc(sizeof(queue));
-    linkedlist *list = make_list();
-    myqueue->list = list;
-    myqueue->enqueue = enqueue;
-    myqueue->dequeue = dequeue;
-    myqueue->empty = emptyq;
-
-    return myqueue;
+void
+debug(queue *queue) {
+    node *head = queue->list->head;
+    int i = 0;
+    printf("list: [");
+    while (head) {
+        printf("%d", head->value);
+        if (i < queue->list->size(queue->list) - 1) {
+            printf(" -> ");
+        }
+        head = head->next;
+        i++;
+    }
+    printf("]\n");
 }
 
 int
 main(int argc, char **argv) {
     queue *myqueue = make_queue();
-    printf("empty: %d\n", myqueue->empty(myqueue));
-    for (int i = 1; i <= 5; i++) {
+    debug(myqueue);
+
+    assert(myqueue->empty(myqueue) == 1);
+    for (int i = 1; i <= 6; i++) {
         myqueue->enqueue(myqueue, i);
     }
-    printf("empty: %d\n", myqueue->empty(myqueue));
+    debug(myqueue);
 
-    printf("%d\n", myqueue->dequeue(myqueue));
-    printf("%d\n", myqueue->dequeue(myqueue));
-    myqueue->enqueue(myqueue, 15);
-    printf("%d\n", myqueue->dequeue(myqueue));
-    printf("%d\n", myqueue->dequeue(myqueue));
-    printf("%d\n", myqueue->dequeue(myqueue));
-    printf("%d\n", myqueue->dequeue(myqueue));
-    free(myqueue->list);
+    assert(myqueue->empty(myqueue) == 0);
+
+    for (int i = 1; i <= 4; i++) {
+        assert(myqueue->dequeue(myqueue) == i);
+    }
+    debug(myqueue);
+    assert(myqueue->dequeue(myqueue) == 5);
+    assert(myqueue->dequeue(myqueue) == 6);
+    assert(myqueue->empty(myqueue) == 1);
+
+    destroy(myqueue);
 }
