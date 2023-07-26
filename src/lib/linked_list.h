@@ -28,7 +28,6 @@ struct LinkedList {
     int (*value_n_from_end)(linkedlist *, size_t);
     void (*reverse)(linkedlist *);
     void (*remove_value)(linkedlist *, int);
-    void (*debug)(linkedlist *);
     void (*destroy)(linkedlist *);
 };
 
@@ -63,8 +62,7 @@ pop_front(linkedlist *list) {
     node *head = list->head;
 
     if (head == NULL) {
-        perror("Something went wrong");
-        exit(1);
+        return -1;
     }
 
     int value = head->value;
@@ -87,8 +85,7 @@ pop_front(linkedlist *list) {
 int
 value_at(linkedlist *list, size_t index) {
     if (index > list->l_size) {
-        perror("Something went wrong");
-        exit(1);
+        return -1;
     }
 
     node *ptr = list->head;
@@ -98,18 +95,6 @@ value_at(linkedlist *list, size_t index) {
     }
 
     return ptr->value;
-}
-
-void
-debug(linkedlist *list) {
-    node *head = list->head;
-    int i = 0;
-    printf("Debugging list:\n");
-    while (head) {
-        printf("%d: %d\n", i, head->value);
-        head = head->next;
-        i++;
-    }
 }
 
 void
@@ -134,8 +119,7 @@ pop_back(linkedlist *list) {
     node *tail = list->tail;
 
     if (tail == NULL) {
-        perror("Something went wrong");
-        exit(1);
+        return -1;
     }
 
     int value = tail->value;
@@ -157,8 +141,7 @@ pop_back(linkedlist *list) {
 int
 front(linkedlist *list) {
     if (list->head == NULL) {
-        perror("Something went wrong");
-        exit(1);
+        return -1;
     }
 
     return list->head->value;
@@ -167,8 +150,7 @@ front(linkedlist *list) {
 int
 back(linkedlist *list) {
     if (list->tail == NULL) {
-        perror("Something went wrong");
-        exit(1);
+        return -1;
     }
 
     return list->tail->value;
@@ -236,24 +218,24 @@ remove_value(linkedlist *list, int value) {
         return;
     }
 
+    list->l_size--;
     prev->next = ptr->next;
     free(ptr);
 }
 
 int
-value_n_from_end(linkedlist *list, size_t fromEnd) {
-    if (fromEnd < 0 || fromEnd >= list->l_size) {
-        perror("Something went wrong");
-        exit(1);
+value_n_from_end(linkedlist *list, size_t from_end) {
+    if (from_end < 0 || from_end >= list->l_size) {
+        return -1;
     }
 
-    if (fromEnd == 0) {
-        fromEnd++;
+    if (from_end == 0) {
+        from_end++;
     }
 
     node *ptr = list->head;
 
-    for (int i = 0; i < list->l_size - fromEnd - 1; i++) {
+    for (int i = 0; i < list->l_size - from_end; i++) {
         ptr = ptr->next;
     }
 
@@ -309,19 +291,8 @@ reverse(linkedlist *list) {
     list->head = prev;
 }
 
-void
-destroy(linkedlist *list) {
-    node *ptr = list->head;
-
-    while (ptr) {
-        node *next = ptr->next;
-        free(ptr);
-        ptr = next;
-    }
-}
-
 linkedlist *
-make_list() {
+make_linked_list() {
     linkedlist *list = malloc(sizeof(linkedlist));
     list->l_size = 0;
 
@@ -341,7 +312,5 @@ make_list() {
     list->remove_value = remove_value;
     list->value_n_from_end = value_n_from_end;
     list->reverse = reverse;
-    list->debug = debug;
-    list->destroy = destroy;
     return list;
 };
