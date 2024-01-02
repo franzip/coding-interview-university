@@ -2,7 +2,10 @@ CFLAGS = -Wall
 
 SRC=$(wildcard *.c)
 
-.PHONY: clean all run-all binary_search binary_tree hash_map linked_list queue_array queue_list vector
+.PHONY: pretty clean all run-all binary_search binary_tree hash_map linked_list queue_array queue_list vector
+
+pretty:
+		clang-format -i *.c
 
 clean:
 		for target in $(SRC); do rm -f $$(basename "$${target}" .c); done
@@ -33,3 +36,4 @@ all:
 
 run-all: all
 		for target in $(SRC); do ./$$(basename "$${target}" .c); done
+
