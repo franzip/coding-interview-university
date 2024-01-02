@@ -1,8 +1,8 @@
 #include "lib/binary_search.h"
 
-#include "assert.h"
-#include "stdio.h"
-#include "stdlib.h"
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int
 main(int argc, char **argv) {
@@ -15,4 +15,5 @@ main(int argc, char **argv) {
     assert(bin_search(nums, 840, size) == 840);
     assert(rec_bin_search(nums, 840, 0, size));
     free(nums);
+    return 0;
 }

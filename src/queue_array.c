@@ -52,4 +52,5 @@ main(int argc, char **argv) {
     assert(myqueue->dequeue(myqueue) == -1);
 
     destroy(myqueue);
+    return 0;
 }

@@ -53,4 +53,5 @@ main(int argc, char **argv) {
     assert(myqueue->empty(myqueue) == 1);
 
     destroy(myqueue);
+    return 0;
 }
