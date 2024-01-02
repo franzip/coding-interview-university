@@ -1,4 +1,4 @@
-#include "stdio.h"
+#include <stdio.h>
 
 int
 bin_search(int *list, int target, int size) {

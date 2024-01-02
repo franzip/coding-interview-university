@@ -1,6 +1,6 @@
 #include "lib/hash_map.h"
 
-#include "assert.h"
+#include <assert.h>
 
 void
 debug(hashtable *table) {
