@@ -28,10 +28,12 @@ int
 main(int argc, char **argv) {
     vector *vec = make_vector();
     assert(vec->length == 0);
+    assert(vec->capacity == 4);
     for (int i = 0; i < 20; i++) {
         vec->push(vec, i * 3);
     }
 
+    assert(vec->capacity == 32);
     assert(vec->length == 20);
     debug(vec);
     vec->insert(vec, 1, 50);
@@ -53,6 +55,7 @@ main(int argc, char **argv) {
     vec->insert(vec, 10, 42);
     vec->insert(vec, 10, 42);
     vec->insert(vec, 10, 42);
+
     assert(vec->length == 24);
     assert(vec->at(vec, 10) == 42);
     debug(vec);
@@ -63,6 +66,15 @@ main(int argc, char **argv) {
     assert(vec->find(vec, 125) == 15);
     assert(vec->find(vec, 1000) == 0);
     assert(vec->find(vec, 1001) == -1);
+    for (int i = 0; i < 20; i++) {
+        vec->pop(vec);
+    }
+    assert(vec->capacity == 8);
+    vec->delete (vec, 0);
+    vec->delete (vec, 1);
+    assert(vec->capacity == 4);
+    debug(vec);
+
     destroy(vec);
     return 0;
 }

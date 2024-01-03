@@ -73,6 +73,7 @@ main(int argc, char **argv) {
     list->erase(list, 0);
     assert(list->value_at(list, 0) != 30);
     assert(list->size(list) == 4);
+    debug(list);
 
     size = list->size(list);
     printf("erasing element at index %d:\n", size);
