@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define INITIAL_CAPACITY 16
+#define INITIAL_CAPACITY       4
+#define CAPACITY_GROWTH_FACTOR 2
+#define MIN_LOAD_FACTOR        0.25
 
 typedef struct Vector vector;
 struct Vector {
@@ -21,10 +23,22 @@ struct Vector {
 };
 
 void
-resize(vector *v) {
-    size_t new_capacity = v->capacity * 2;
+_resize(vector *v, size_t new_capacity) {
     v->items = realloc(v->items, new_capacity * sizeof(int));
     v->capacity = new_capacity;
+}
+
+void
+_check_resize(vector *v) {
+    if (v->length >= v->capacity) {
+        _resize(v, v->capacity * CAPACITY_GROWTH_FACTOR);
+    }
+
+    float load_factor = (v->length) / (float) v->capacity;
+
+    if (load_factor <= MIN_LOAD_FACTOR) {
+        _resize(v, v->capacity / CAPACITY_GROWTH_FACTOR);
+    }
 }
 
 bool
@@ -46,9 +60,8 @@ at(vector *v, size_t index) {
 
 void
 push(vector *v, int item) {
-    if (v->length >= v->capacity) {
-        resize(v);
-    }
+    _check_resize(v);
+
     int *ptr = v->items + v->length;
     *ptr = item;
 
@@ -67,9 +80,7 @@ insert(vector *v, size_t index, int item) {
         exit(1);
     }
 
-    if (v->length >= v->capacity) {
-        resize(v);
-    }
+    _check_resize(v);
 
     int *ptr = v->items + v->length;
 
@@ -94,17 +105,15 @@ int delete(vector *v, size_t index) {
     }
 
     v->length--;
+    _check_resize(v);
+
     return val;
 }
 
 int
 pop(vector *v) {
     int item = v->delete (v, v->length - 1);
-    if (v->length * 4 <= v->capacity) {
-        int new_capacity = v->capacity / 2;
-        v->items = realloc(v->items, new_capacity * sizeof(int));
-        v->capacity = new_capacity;
-    }
+
     return item;
 }
 
