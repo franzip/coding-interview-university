@@ -192,23 +192,41 @@ get_successor(binary_tree *tree, int value) {
         return NULL;
     }
 
-    return _get_min(node->right);
+    if (node->right) {
+        return _get_min(node->right);
+    }
+
+    binary_tree_node *parent = node->parent;
+
+    while (parent != NULL && parent->right == node) {
+        parent = parent->parent;
+    }
+
+    return parent;
 }
 
 binary_tree_node *
 _get_predecessor(binary_tree_node *node) {
-    return _get_max(node->left);
-}
-
-binary_tree_node *
-get_predecessor(binary_tree *tree, int value) {
-    binary_tree_node *node = _find_node(tree->root, value);
-
     if (node == NULL) {
         return NULL;
     }
 
-    return _get_predecessor(node);
+    if (node->left) {
+        return _get_max(node->left);
+    }
+
+    binary_tree_node *parent = node->parent;
+
+    if (parent != NULL && parent->right == node) {
+        return parent;
+    }
+
+    while (parent != NULL && parent->left == node) {
+        node = parent;
+        parent = parent->parent;
+    }
+
+    return parent;
 }
 
 void
