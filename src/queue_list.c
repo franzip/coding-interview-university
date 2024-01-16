@@ -36,7 +36,7 @@ main(int argc, char **argv) {
     queue *myqueue = make_queue();
     debug(myqueue);
 
-    assert(myqueue->empty(myqueue) == 1);
+    assert(myqueue->empty(myqueue) == true);
     for (int i = 1; i <= 6; i++) {
         myqueue->enqueue(myqueue, i);
     }
@@ -50,7 +50,7 @@ main(int argc, char **argv) {
     debug(myqueue);
     assert(myqueue->dequeue(myqueue) == 5);
     assert(myqueue->dequeue(myqueue) == 6);
-    assert(myqueue->empty(myqueue) == 1);
+    assert(myqueue->empty(myqueue) == true);
 
     destroy(myqueue);
     return 0;

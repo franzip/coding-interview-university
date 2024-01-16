@@ -36,7 +36,7 @@ main(int argc, char **argv) {
 
     linkedlist *list = make_linked_list();
     assert(list->size(list) == 0);
-    assert(list->empty(list) == 1);
+    assert(list->empty(list) == true);
     assert(list->pop_back(list) == -1);
     assert(list->pop_front(list) == -1);
     assert(list->front(list) == -1);
