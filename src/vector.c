@@ -32,7 +32,6 @@ main(int argc, char **argv) {
     for (int i = 0; i < 20; i++) {
         vec->push(vec, i * 3);
     }
-
     assert(vec->capacity == 32);
     assert(vec->length == 20);
     debug(vec);

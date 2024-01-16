@@ -23,8 +23,8 @@ destroy(queue *queue) {
 int
 main(int argc, char **argv) {
     queue *myqueue = make_queue();
-    assert(myqueue->full(myqueue) == 0);
-    assert(myqueue->empty(myqueue) == 1);
+    assert(myqueue->full(myqueue) == false);
+    assert(myqueue->empty(myqueue) == true);
     assert(myqueue->dequeue(myqueue) == -1);
     debug(myqueue);
 
@@ -34,10 +34,10 @@ main(int argc, char **argv) {
 
     debug(myqueue);
 
-    assert(myqueue->empty(myqueue) == 0);
+    assert(myqueue->empty(myqueue) == false);
     assert(myqueue->enqueue(myqueue, 15) == 0);
     debug(myqueue);
-    assert(myqueue->full(myqueue) == 1);
+    assert(myqueue->full(myqueue) == true);
     assert(myqueue->enqueue(myqueue, 100) == -1);
 
     for (int i = 1; i < ARRAY_CAPACITY; i++) {
@@ -47,7 +47,7 @@ main(int argc, char **argv) {
     debug(myqueue);
     assert(myqueue->empty(myqueue) == 0);
     assert(myqueue->dequeue(myqueue) == 15);
-    assert(myqueue->empty(myqueue) == 1);
+    assert(myqueue->empty(myqueue) == true);
     debug(myqueue);
     assert(myqueue->dequeue(myqueue) == -1);
 
