@@ -42,10 +42,10 @@ main(int argc, char **argv) {
     table->add(table, "random", "ba12");
     table->add(table, "foobar", "ba12");
     table->add(table, "barfoo", "ba12");
-    assert(table->exists(table, "barfoo") == 1);
+    assert(table->exists(table, "barfoo") == true);
     assert(table->remove(table, "nonexisting") == -1);
     assert(table->remove(table, "barfoo") == 0);
-    assert(table->exists(table, "barfoo") == 0);
+    assert(table->exists(table, "barfoo") == false);
     debug(table);
 
     table->remove(table, "foo");
