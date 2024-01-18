@@ -8,22 +8,6 @@ destroy(vector *v) {
     free(v);
 }
 
-void
-debug(vector *v) {
-    int *ptr = v->items;
-    int idx = 0;
-    printf("vector: [");
-    while (ptr != v->items + v->length) {
-        printf("%d", *ptr);
-        if (idx + 1 < v->length) {
-            printf(", ");
-        }
-        idx++;
-        ptr++;
-    }
-    printf("]\n");
-}
-
 int
 main(int argc, char **argv) {
     vector *vec = make_vector();
@@ -34,7 +18,7 @@ main(int argc, char **argv) {
     }
     assert(vec->capacity == 32);
     assert(vec->length == 20);
-    debug(vec);
+    vec->print(vec);
     vec->insert(vec, 1, 50);
     vec->insert(vec, 10, 125);
     assert(vec->at(vec, 1) == 50);
@@ -43,7 +27,7 @@ main(int argc, char **argv) {
 
     vec->prepend(vec, 1000);
     vec->prepend(vec, 1000);
-    debug(vec);
+    vec->print(vec);
     assert(vec->length == 24);
     assert(vec->pop(vec) == 57);
     assert(vec->pop(vec) == 54);
@@ -57,10 +41,10 @@ main(int argc, char **argv) {
 
     assert(vec->length == 24);
     assert(vec->at(vec, 10) == 42);
-    debug(vec);
+    vec->print(vec);
     vec->remove(vec, 42);
     assert(vec->at(vec, 10) != 42);
-    debug(vec);
+    vec->print(vec);
 
     assert(vec->find(vec, 125) == 15);
     assert(vec->find(vec, 1000) == 0);
@@ -72,7 +56,7 @@ main(int argc, char **argv) {
     vec->delete (vec, 0);
     vec->delete (vec, 1);
     assert(vec->capacity == 4);
-    debug(vec);
+    vec->print(vec);
 
     destroy(vec);
     return 0;
