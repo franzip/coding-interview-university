@@ -20,6 +20,7 @@ struct Vector {
     int (*delete)(vector *, size_t);
     void (*remove)(vector *, int);
     int (*find)(vector *, int);
+    void (*print)(vector *);
 };
 
 void
@@ -144,6 +145,22 @@ find(vector *v, int needle) {
     return -1;
 }
 
+void
+print_vector(vector *v) {
+    int *ptr = v->items;
+    int idx = 0;
+    printf("vector: [");
+    while (ptr != v->items + v->length) {
+        printf("%d", *ptr);
+        if (idx + 1 < v->length) {
+            printf(", ");
+        }
+        idx++;
+        ptr++;
+    }
+    printf("]\n");
+}
+
 vector *
 make_vector() {
     vector *vec = malloc(sizeof(vector));
@@ -163,6 +180,7 @@ make_vector() {
     vec->delete = delete;
     vec->remove = remove_el;
     vec->find = find;
+    vec->print = print_vector;
 
     return vec;
 }
