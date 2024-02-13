@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "*.spec.js": "javascript",
+    "*.test.js": "javascript",
+    "*.story.js": "javascript",
+    "*.svelte": "svelte",
+    "stdlib.h": "c",
+    "assert.h": "c",
+    "heap.h": "c",
+    "atomic": "c",
+    "cstring": "c",
+    "string.h": "c"
+  }
+}
