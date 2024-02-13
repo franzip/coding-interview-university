@@ -2,13 +2,13 @@ CFLAGS = -Wall
 
 SRC=$(wildcard *.c)
 
-.PHONY: pretty clean all run-all binary_search binary_tree hash_map linked_list queue_array queue_list vector heap
+.PHONY: pretty clean all run-all binary_search binary_tree hash_map linked_list queue_array queue_list vector heap sorting
 
 pretty:
-		clang-format -i *.c
+	clang-format -i *.c
 
 clean:
-		for target in $(SRC); do rm -f $$(basename "$${target}" .c); done
+	for target in $(SRC); do rm -f $$(basename "$${target}" .c); done
 
 binary_search:
 	clang $(CFLAGS) binary_search.c -o binary_search
@@ -34,9 +34,12 @@ vector:
 heap:
 	clang $(CFLAGS) heap.c -o heap
 
+sorting:
+	clang $(CFLAGS) sorting.c -o sorting
+
 all:
-		for target in $(SRC); do clang $(CFLAGS) $$target -o $$(basename "$${target}" .c); done
+	for target in $(SRC); do clang $(CFLAGS) $$target -o $$(basename "$${target}" .c); done
 
 run-all: all
-		for target in $(SRC); do ./$$(basename "$${target}" .c); done
+	for target in $(SRC); do ./$$(basename "$${target}" .c); done
 
