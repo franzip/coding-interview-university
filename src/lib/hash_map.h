@@ -166,6 +166,22 @@ remove_item(hashtable *table, char *key) {
     return -1;
 }
 
+void
+debug_table(hashtable *table) {
+    printf("size %d, taken %d, load factor: %.2f\n", table->size, table->count,
+           (table->count + 1) / (float) table->size);
+    printf("{\n");
+    for (int i = 0; i < table->size; i++) {
+        if (table->items[i] != NULL) {
+            bool removed = strcmp(table->items[i]->key, EMPTY_VALUE) == 0;
+            printf("\tindex %i: %s -> %s\n", i,
+                   removed ? "REMOVED" : table->items[i]->key,
+                   removed ? "REMOVED" : table->items[i]->value);
+        }
+    }
+    printf("}\n\n");
+}
+
 hashtable *
 make_hashtable() {
     hashtable *table = (hashtable *) malloc(sizeof(hashtable));
