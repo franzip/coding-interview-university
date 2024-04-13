@@ -2,7 +2,7 @@ CFLAGS = -Wall
 
 SRC=$(wildcard *.c)
 
-.PHONY: pretty clean all run-all binary_search binary_tree hash_map linked_list queue_array queue_list vector heap sorting
+.PHONY: pretty clean all run-all binary_search binary_tree hash_map linked_list queue_array queue_list vector heap sorting graph
 
 pretty:
 	clang-format -i *.c
@@ -30,6 +30,9 @@ queue_list:
 
 vector:
 	clang $(CFLAGS) vector.c -o vector
+
+graph:
+	clang $(CFLAGS) graph.c -o graph
 
 heap:
 	clang $(CFLAGS) heap.c -o heap

@@ -2,12 +2,6 @@
 
 #include <assert.h>
 
-void
-destroy(queue *queue) {
-    free(queue->items);
-    free(queue);
-}
-
 int
 main(int argc, char **argv) {
     queue *myqueue = make_queue();
@@ -39,6 +33,7 @@ main(int argc, char **argv) {
     debug_queue(myqueue);
     assert(myqueue->dequeue(myqueue) == -1);
 
-    destroy(myqueue);
+    free(myqueue->items);
+    free(myqueue);
     return 0;
 }
