@@ -2,12 +2,6 @@
 
 #include <assert.h>
 
-void
-destroy(vector *v) {
-    free(v->items);
-    free(v);
-}
-
 int
 main(int argc, char **argv) {
     vector *vec = make_vector();
@@ -58,6 +52,7 @@ main(int argc, char **argv) {
     assert(vec->capacity == 4);
     vec->print(vec);
 
-    destroy(vec);
+    free(vec->items);
+    free(vec);
     return 0;
 }
