@@ -30,7 +30,7 @@ emptyq(queue *queue) {
 
 void
 debug_queue_list(queue *queue) {
-    node *head = queue->list->head;
+    list_node *head = queue->list->head;
     int i = 0;
     printf("list: [");
     while (head) {
