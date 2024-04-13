@@ -28,6 +28,22 @@ emptyq(queue *queue) {
     return queue->list->empty(queue->list);
 }
 
+void
+debug_queue_list(queue *queue) {
+    node *head = queue->list->head;
+    int i = 0;
+    printf("list: [");
+    while (head) {
+        printf("%d", head->value);
+        if (i < queue->list->size(queue->list) - 1) {
+            printf(" -> ");
+        }
+        head = head->next;
+        i++;
+    }
+    printf("]\n");
+}
+
 queue *
 make_queue() {
     queue *myqueue = (queue *) malloc(sizeof(queue));

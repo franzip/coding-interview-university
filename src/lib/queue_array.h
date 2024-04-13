@@ -55,6 +55,17 @@ full(queue *queue) {
     return ((queue->write_ptr + 1) % ARRAY_CAPACITY) == queue->read_ptr;
 }
 
+void
+debug_queue(queue *queue) {
+    printf("queue: [");
+    for (int i = 0; i < ARRAY_CAPACITY; i++) {
+        printf("%d", queue->items[i]);
+        if (i < ARRAY_CAPACITY - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
 queue *
 make_queue() {
     queue *myqueue = (queue *) malloc(sizeof(queue));
