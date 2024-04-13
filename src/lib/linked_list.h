@@ -291,6 +291,22 @@ reverse(linkedlist *list) {
     list->head = prev;
 }
 
+void
+debug_list(linkedlist *list) {
+    node *head = list->head;
+    int i = 0;
+    printf("list: [");
+    while (head) {
+        printf("%d", head->value);
+        if (i < list->size(list) - 1) {
+            printf(" -> ");
+        }
+        head = head->next;
+        i++;
+    }
+    printf("]\n");
+}
+
 linkedlist *
 make_linked_list() {
     linkedlist *list = malloc(sizeof(linkedlist));
