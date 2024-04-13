@@ -2,18 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Node node;
+typedef struct ListNode list_node;
 typedef struct LinkedList linkedlist;
 
-struct Node {
+struct ListNode {
     int value;
-    node *next;
+    list_node *next;
 };
 
 struct LinkedList {
     size_t l_size;
-    node *head;
-    node *tail;
+    list_node *head;
+    list_node *tail;
     int (*size)(linkedlist *);
     bool (*empty)(linkedlist *);
     int (*value_at)(linkedlist *, size_t);
@@ -42,7 +42,7 @@ empty(linkedlist *list) {
 
 void
 push_front(linkedlist *list, int val) {
-    node *new_head = malloc(sizeof(node));
+    list_node *new_head = malloc(sizeof(list_node));
     new_head->value = val;
 
     if (list->head == NULL) {
@@ -58,14 +58,14 @@ push_front(linkedlist *list, int val) {
 
 int
 pop_front(linkedlist *list) {
-    node *head = list->head;
+    list_node *head = list->head;
 
     if (head == NULL) {
         return -1;
     }
 
     int value = head->value;
-    node *next = head->next;
+    list_node *next = head->next;
 
     if (next == NULL) {
         list->head = NULL;
@@ -87,7 +87,7 @@ value_at(linkedlist *list, size_t index) {
         return -1;
     }
 
-    node *ptr = list->head;
+    list_node *ptr = list->head;
 
     for (int i = 0; i < index; i++) {
         ptr = ptr->next;
@@ -98,7 +98,7 @@ value_at(linkedlist *list, size_t index) {
 
 void
 push_back(linkedlist *list, int val) {
-    node *new_tail = malloc(sizeof(node));
+    list_node *new_tail = malloc(sizeof(list_node));
 
     new_tail->value = val;
 
@@ -115,14 +115,14 @@ push_back(linkedlist *list, int val) {
 
 int
 pop_back(linkedlist *list) {
-    node *tail = list->tail;
+    list_node *tail = list->tail;
 
     if (tail == NULL) {
         return -1;
     }
 
     int value = tail->value;
-    node *new_tail = list->head;
+    list_node *new_tail = list->head;
 
     while (new_tail->next != tail) {
         new_tail = new_tail->next;
@@ -172,11 +172,11 @@ insert(linkedlist *list, size_t index, int value) {
         return;
     }
 
-    node *new_node = malloc(sizeof(node));
+    list_node *new_node = malloc(sizeof(list_node));
     new_node->value = value;
 
-    node *prev = list->head;
-    node *next = prev->next;
+    list_node *prev = list->head;
+    list_node *next = prev->next;
 
     for (int i = 0; i < index - 1; i++) {
         prev = prev->next;
@@ -190,8 +190,8 @@ insert(linkedlist *list, size_t index, int value) {
 
 void
 remove_value(linkedlist *list, int value) {
-    node *ptr = list->head;
-    node *prev;
+    list_node *ptr = list->head;
+    list_node *prev;
     int i = 0;
 
     while (ptr) {
@@ -232,7 +232,7 @@ value_n_from_end(linkedlist *list, size_t from_end) {
         from_end++;
     }
 
-    node *ptr = list->head;
+    list_node *ptr = list->head;
 
     for (int i = 0; i < list->l_size - from_end; i++) {
         ptr = ptr->next;
@@ -258,8 +258,8 @@ erase(linkedlist *list, size_t index) {
         return;
     }
 
-    node *prev = list->head;
-    node *next = prev->next;
+    list_node *prev = list->head;
+    list_node *next = prev->next;
 
     for (int i = 0; i < index - 1; i++) {
         prev = prev->next;
@@ -274,14 +274,14 @@ erase(linkedlist *list, size_t index) {
 
 void
 reverse(linkedlist *list) {
-    node *curr = list->head;
-    node *prev = NULL;
+    list_node *curr = list->head;
+    list_node *prev = NULL;
     if (curr == NULL) {
         return;
     }
 
     while (curr) {
-        node *next = curr->next;
+        list_node *next = curr->next;
         curr->next = prev;
         prev = curr;
         curr = next;
@@ -292,7 +292,7 @@ reverse(linkedlist *list) {
 
 void
 debug_list(linkedlist *list) {
-    node *head = list->head;
+    list_node *head = list->head;
     int i = 0;
     printf("list: [");
     while (head) {

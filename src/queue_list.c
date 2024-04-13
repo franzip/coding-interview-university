@@ -4,10 +4,10 @@
 
 void
 destroy(queue *queue) {
-    node *ptr = queue->list->head;
+    list_node *ptr = queue->list->head;
 
     while (ptr) {
-        node *next = ptr->next;
+        list_node *next = ptr->next;
         free(ptr);
         ptr = next;
     }
