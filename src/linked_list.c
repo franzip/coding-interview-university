@@ -4,10 +4,10 @@
 
 void
 destroy(linkedlist *list) {
-    node *ptr = list->head;
+    list_node *ptr = list->head;
 
     while (ptr) {
-        node *next = ptr->next;
+        list_node *next = ptr->next;
         free(ptr);
         ptr = next;
     }
