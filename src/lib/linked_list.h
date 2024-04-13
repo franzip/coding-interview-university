@@ -28,7 +28,6 @@ struct LinkedList {
     int (*value_n_from_end)(linkedlist *, size_t);
     void (*reverse)(linkedlist *);
     void (*remove_value)(linkedlist *, int);
-    void (*destroy)(linkedlist *);
 };
 
 int
