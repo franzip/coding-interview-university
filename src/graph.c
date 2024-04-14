@@ -1,20 +1,6 @@
 #include "lib/graph.h"
 
 void
-destroy_graph_list(graph_list *g) {
-    for (int i = 0; i < g->vertices; i++) {
-        graph_node *ptr = g->list[i].head;
-        graph_node *next;
-        while (ptr) {
-            next = ptr->next;
-            free(ptr);
-            ptr = next;
-        }
-    }
-    free(g);
-}
-
-void
 test_graph_list() {
     /*
 
@@ -62,11 +48,13 @@ test_graph_matrix() {
     g->add_edge(g, 1, 4, 1);
     g->add_edge(g, 2, 5, 1);
 
-    debug_graph_matrix(g);
+    debug_graph_matrix(g, false);
 
     dfs_graph_matrix_rec(g, 0);
     dfs_graph_matrix_stack(g, 0);
     bfs_graph_matrix(g, 0);
+
+    destroy_graph_matrix(g);
 }
 
 int

@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,6 +34,7 @@ struct GraphList {
     adj_list* list;
 
     void (*add_edge)(graph_list*, int, int, int);
+    void (*add_undirected_edge)(graph_list*, int, int, int);
 };
 
 struct GraphMatrix {
@@ -52,6 +54,20 @@ add_edge_to_list(graph_list* g, int src, int dst, int weight) {
     g->list[src].head = dst_node;
 };
 
+void
+add_undirected_edge_to_list(graph_list* g, int v1, int v2, int weight) {
+    assert(weight >= 0);
+    assert(v1 != v2);
+
+    graph_node* new_node = make_graph_node(v2, weight);
+    new_node->next = g->list[v1].head;
+    g->list[v1].head = new_node;
+
+    new_node = make_graph_node(v1, weight);
+    new_node->next = g->list[v2].head;
+    g->list[v2].head = new_node;
+}
+
 graph_list*
 make_graph_list(int vertices) {
     graph_list* g = malloc(sizeof(graph_list));
@@ -63,6 +79,7 @@ make_graph_list(int vertices) {
     }
 
     g->add_edge = add_edge_to_list;
+    g->add_undirected_edge = add_undirected_edge_to_list;
 
     return g;
 };
@@ -85,7 +102,7 @@ _dfs_graph_list_rec_imp(graph_list* g, int vertex, bool* visited) {
 }
 
 bool*
-_make_visited_list(int size) {
+_make_bool_list(int size) {
     bool* visited = malloc(size * sizeof(bool));
     for (int i = 0; i < size; i++) {
         visited[i] = false;
@@ -94,10 +111,20 @@ _make_visited_list(int size) {
     return visited;
 }
 
+int*
+_make_distance_list(int size) {
+    int* distance = malloc(size * sizeof(int));
+    for (int i = 0; i < size; i++) {
+        distance[i] = INT_MAX;
+    }
+
+    return distance;
+}
+
 void
 dfs_graph_list_rec(graph_list* g, int start_vertex) {
     printf("DFS: ");
-    bool* visited = _make_visited_list(g->vertices);
+    bool* visited = _make_bool_list(g->vertices);
     _dfs_graph_list_rec_imp(g, start_vertex, visited);
 
     printf("\n");
@@ -107,7 +134,7 @@ dfs_graph_list_rec(graph_list* g, int start_vertex) {
 void
 dfs_graph_list_stack(graph_list* g, int start_vertex) {
     printf("DFS: ");
-    bool* visited = _make_visited_list(g->vertices);
+    bool* visited = _make_bool_list(g->vertices);
     stack* s = make_stack();
     s->push(s, start_vertex);
 
@@ -142,7 +169,7 @@ dfs_graph_list_stack(graph_list* g, int start_vertex) {
 void
 bfs_graph_list(graph_list* g, int start_vertex) {
     printf("BFS: ");
-    bool* visited = _make_visited_list(g->vertices);
+    bool* visited = _make_bool_list(g->vertices);
     queue* q = make_queue();
 
     q->enqueue(q, start_vertex);
@@ -207,17 +234,33 @@ add_edge_to_matrix(graph_matrix* g, int src, int dst, int weight) {
 }
 
 void
-debug_graph_matrix(graph_matrix* g) {
+debug_graph_matrix(graph_matrix* g, bool raw) {
     int vertices = g->vertices;
+
+    if (raw) {
+        for (int row = 0; row < vertices; row++) {
+            printf("[");
+            for (int col = 0; col < vertices; col++) {
+                printf("%d", g->matrix[row * vertices + col]);
+                if (col != vertices - 1) {
+                    printf(", ");
+                }
+            }
+            printf("]\n");
+        }
+        printf("\n");
+        return;
+    }
+
     for (int vertex = 0; vertex < vertices; vertex++) {
         printf("vertex %d: ", vertex);
         bool is_empty = true;
 
         for (int target = 0; target < vertices; target++) {
             int weight = g->matrix[vertex * vertices + target];
-            if (weight != -1) {
+            if (weight != 0) {
                 is_empty = false;
-                printf("(node: %d, weight: %d)", target, weight);
+                printf("(node: %d, weight: %d) -> ", target, weight);
             }
         }
 
@@ -234,7 +277,7 @@ make_graph_matrix(int vertices) {
     graph->vertices = vertices;
     int* matrix = malloc(vertices * vertices * sizeof(int));
     for (int i = 0; i < vertices * vertices; i++) {
-        matrix[i] = -1;
+        matrix[i] = 0;
     }
 
     graph->matrix = matrix;
@@ -261,7 +304,7 @@ _dfs_graph_matrix_rec_imp(graph_matrix* g, int vertex, bool* visited) {
 void
 dfs_graph_matrix_rec(graph_matrix* g, int start_vertex) {
     printf("DFS: ");
-    bool* visited = _make_visited_list(g->vertices);
+    bool* visited = _make_bool_list(g->vertices);
     _dfs_graph_matrix_rec_imp(g, start_vertex, visited);
     free(visited);
     printf("\n");
@@ -270,7 +313,7 @@ dfs_graph_matrix_rec(graph_matrix* g, int start_vertex) {
 void
 dfs_graph_matrix_stack(graph_matrix* g, int start_vertex) {
     printf("DFS: ");
-    bool* visited = _make_visited_list(g->vertices);
+    bool* visited = _make_bool_list(g->vertices);
     stack* s = make_stack();
     int vertices = g->vertices;
 
@@ -299,10 +342,52 @@ dfs_graph_matrix_stack(graph_matrix* g, int start_vertex) {
     printf("\n");
 }
 
+bool
+check_graph_cycle_imp(graph_list* g, int vertex, bool* visited, bool* stack) {
+    if (stack[vertex]) {
+        return true;
+    }
+
+    if (visited[vertex]) {
+        return false;
+    }
+
+    visited[vertex] = true;
+    stack[vertex] = true;
+
+    graph_node* adj = g->list[vertex].head;
+
+    while (adj) {
+        if (check_graph_cycle_imp(g, adj->value, visited, stack)) {
+            return true;
+        }
+        adj = adj->next;
+    }
+
+    stack[vertex] = false;
+
+    return false;
+}
+
+bool
+check_graph_cycle(graph_list* graph, int src) {
+    int vertices = graph->vertices;
+    bool* visited = _make_bool_list(vertices);
+    bool* stack = _make_bool_list(vertices);
+
+    for (int vertex = 0; vertex < vertices; vertex++) {
+        if (check_graph_cycle_imp(graph, vertex, visited, stack)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void
 bfs_graph_matrix(graph_matrix* g, int start_vertex) {
     printf("BFS: ");
-    bool* visited = _make_visited_list(g->vertices);
+    bool* visited = _make_bool_list(g->vertices);
     queue* q = make_queue();
     int vertices = g->vertices;
 
@@ -332,4 +417,24 @@ bfs_graph_matrix(graph_matrix* g, int start_vertex) {
     free(visited);
     free(q);
     printf("\n");
+}
+
+void
+destroy_graph_list(graph_list* g) {
+    for (int i = 0; i < g->vertices; i++) {
+        graph_node* ptr = g->list[i].head;
+        graph_node* next;
+        while (ptr) {
+            next = ptr->next;
+            free(ptr);
+            ptr = next;
+        }
+    }
+    free(g);
+}
+
+void
+destroy_graph_matrix(graph_matrix* g) {
+    free(g->matrix);
+    free(g);
 }
